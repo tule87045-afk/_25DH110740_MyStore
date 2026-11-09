@@ -1,0 +1,28 @@
+﻿@model _25DH110740_MyStore.Models.ViewModel.PersonalMenuVM
+<ul class="personal-menu">
+    <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-home"></i> Trang chủ</a></li>
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-user"></i>
+            @if (Model.IsLoggedIn) { <text>Hello, @Model.Username</text> } else { <text>Tài khoản</text> }
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right">
+            @if (Model.IsLoggedIn)
+            {
+                <li><a href="@Url.Action("ProfileInfo", "Account")">Thông tin tài khoản</a></li>
+                <li><a href="@Url.Action("MyOrder", "Order")">Lịch sử mua hàng</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="@Url.Action("Logout", "Account")">Đăng xuất</a></li>
+            }
+            else
+            {
+                <li><a href="@Url.Action("Register", "Account")">Đăng ký</a></li>
+                <li><a href="@Url.Action("Login", "Account")">Đăng nhập</a></li>
+            }
+        </ul>
+    </li>
+    <li>
+        <a href="@Url.Action("Index", "Cart")"><i class="fa fa-shopping-cart"></i> Giỏ hàng <span class="badge cart-badge">@Model.CartCount</span></a>
+    </li>
+</ul>

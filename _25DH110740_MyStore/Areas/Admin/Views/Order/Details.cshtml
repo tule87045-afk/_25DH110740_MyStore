@@ -1,0 +1,27 @@
+﻿@model _25DH110740_MyStore.Models.Order
+@{ ViewBag.Title = "Đơn hàng #" + Model.OrderId; }
+<h2>Đơn hàng #@Model.OrderId</h2>
+<div class="row">
+    <div class="col-md-5"><div class="card">
+        <table class="table">
+            <tr><th>Khách hàng</th><td>@Model.Customer.CustomerName (@Model.Customer.Username)</td></tr>
+            <tr><th>Điện thoại</th><td>@Model.Customer.CustomerPhone</td></tr>
+            <tr><th>Ngày đặt</th><td>@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</td></tr>
+            <tr><th>Thanh toán</th><td>@Model.PaymentMethod</td></tr>
+            <tr><th>Giao hàng</th><td>@Model.DeliveryMethod</td></tr>
+            <tr><th>Địa chỉ</th><td>@Model.ShippingAddress</td></tr>
+            <tr><th>Tổng tiền</th><td><b>@Format.Money(Model.TotalAmount)</b></td></tr>
+        </table>
+        @using (Html.BeginForm("UpdateStatus", "Order", new { id = Model.OrderId }, FormMethod.Post, new { @class = "form-inline" }))
+        {
+            @Html.AntiForgeryToken()
+            <select name="status" class="form-control">@foreach (var s in OrderStatus.All) { <option @(s == Model.PaymentStatus ? "selected" : "")>@s</option> }</select>
+            <button class="btn btn-success">Cập nhật trạng thái</button>
+        }
+    </div></div>
+    <div class="col-md-7"><div class="card"><table class="table">
+        <thead><tr><th>Sản phẩm</th><th>SL</th><th>Đơn giá</th><th class="text-right">Thành tiền</th></tr></thead>
+        @foreach (var d in Model.OrderDetails) { <tr><td>@d.Product.ProductName</td><td>@d.Quantity</td><td>@Format.Money(d.UnitPrice)</td><td class="text-right">@Format.Money(d.TotalPrice)</td></tr> }
+    </table></div></div>
+</div>
+<a href="@Url.Action("Index")" class="btn btn-default">&laquo; Danh sách</a>

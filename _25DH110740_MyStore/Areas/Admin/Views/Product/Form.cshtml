@@ -1,0 +1,21 @@
+﻿@model _25DH110740_MyStore.Models.Product
+@{ ViewBag.Title = Model.ProductId == 0 ? "Thêm sản phẩm" : "Sửa sản phẩm"; }
+<h2>@ViewBag.Title</h2>
+<div class="card" style="max-width:720px">
+@using (Html.BeginForm(Model.ProductId == 0 ? "Create" : "Edit", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.ProductId)
+    <div class="form-group">@Html.LabelFor(m => m.ProductName)@Html.TextBoxFor(m => m.ProductName, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.ProductName, "", new { @class = "text-danger" })</div>
+    <div class="row">
+        <div class="col-sm-6 form-group">@Html.LabelFor(m => m.CategoryId)@Html.DropDownList("CategoryId", null, new { @class = "form-control" })</div>
+        <div class="col-sm-6 form-group">@Html.LabelFor(m => m.Brand)@Html.TextBoxFor(m => m.Brand, new { @class = "form-control" })</div>
+        <div class="col-sm-6 form-group">@Html.LabelFor(m => m.Price)@Html.TextBoxFor(m => m.Price, new { @class = "form-control", type = "number", min = 0 })@Html.ValidationMessageFor(m => m.Price, "", new { @class = "text-danger" })</div>
+        <div class="col-sm-6 form-group">@Html.LabelFor(m => m.Stock)@Html.TextBoxFor(m => m.Stock, new { @class = "form-control", type = "number", min = 0 })</div>
+    </div>
+    <div class="form-group">@Html.LabelFor(m => m.ProductDescription)@Html.TextAreaFor(m => m.ProductDescription, 4, 40, new { @class = "form-control" })</div>
+    <div class="form-group">@Html.LabelFor(m => m.ImageUrl)@Html.TextBoxFor(m => m.ImageUrl, new { @class = "form-control" })
+        <p class="help-block">Hoặc tải ảnh lên:</p><input type="file" name="imageFile" accept="image/*" /></div>
+    <button class="btn btn-success">Lưu</button> <a class="btn btn-default" href="@Url.Action("Index")">Hủy</a>
+}
+</div>

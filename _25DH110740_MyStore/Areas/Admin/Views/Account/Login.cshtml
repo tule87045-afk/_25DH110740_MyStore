@@ -1,0 +1,14 @@
+﻿@model _25DH110740_MyStore.Models.ViewModel.LoginVM
+@{ ViewBag.Title = "Đăng nhập quản trị"; }
+<div class="card login-box">
+    <h3 class="text-center">Đăng nhập quản trị</h3>
+    @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">@Html.LabelFor(m => m.Username)@Html.TextBoxFor(m => m.Username, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })</div>
+        <div class="form-group">@Html.LabelFor(m => m.Password)@Html.PasswordFor(m => m.Password, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })</div>
+        <button class="btn btn-success btn-block btn-lg">Đăng nhập</button>
+        <p class="text-center text-muted small" style="margin-top:10px">Demo: admin / admin123</p>
+    }
+</div>

@@ -1,0 +1,18 @@
+﻿@model _25DH110740_MyStore.Models.ViewModel.HomeProductVM
+<section class="section">
+    <h2 class="section-title">Sản phẩm mới</h2>
+    @if (!Model.NewProducts.Any())
+    {
+        <p class="text-center text-muted">Không tìm thấy sản phẩm phù hợp.</p>
+    }
+    else
+    {
+        <div class="grid">
+            @foreach (var p in Model.NewProducts)
+            {
+                <div class="grid-item">@Html.Partial("_ProductCard", p)</div>
+            }
+        </div>
+        @Html.Pager(Model.NewProducts, page => Url.Action("Index", new { page, searchTerm = Model.SearchTerm }))
+    }
+</section>

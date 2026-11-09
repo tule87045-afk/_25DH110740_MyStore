@@ -1,0 +1,26 @@
+﻿@model PagedList.IPagedList<_25DH110740_MyStore.Models.Order>
+@{
+    ViewBag.Title = "Đơn hàng"; string status = ViewBag.Status as string, term = ViewBag.SearchTerm as string; int? cid = ViewBag.CustomerId as int?;
+    var cust = ViewBag.Customer as _25DH110740_MyStore.Models.Customer;
+}
+<h2>Quản lý đơn hàng @if (cust != null) { <small>của khách @cust.CustomerName</small> }</h2>
+<div class="card">
+@using (Html.BeginForm("Index", "Order", FormMethod.Get, new { @class = "form-inline", style = "margin-bottom:12px" }))
+{
+    <input type="hidden" name="customerId" value="@cid" />
+    <input class="form-control" name="searchTerm" value="@term" placeholder="Tên khách hàng" />
+    <select class="form-control" name="status"><option value="">-- Mọi trạng thái --</option>
+        @foreach (var s in OrderStatus.All) { <option @(s == status ? "selected" : "")>@s</option> }
+    </select>
+    <button class="btn btn-primary">Lọc</button>
+}
+<table class="table table-hover">
+    <thead><tr><th>Mã</th><th>Khách hàng</th><th>Ngày đặt</th><th>Tổng tiền</th><th>Trạng thái</th><th></th></tr></thead>
+    @foreach (var o in Model)
+    {
+        <tr><td>#@o.OrderId</td><td>@o.Customer.CustomerName</td><td>@o.OrderDate.ToString("dd/MM/yyyy HH:mm")</td><td>@Format.Money(o.TotalAmount)</td><td>@o.PaymentStatus</td>
+        <td><a class="btn btn-default btn-sm" href="@Url.Action("Details", new { id = o.OrderId })">Chi tiết</a></td></tr>
+    }
+</table>
+@Html.Pager(Model, page => Url.Action("Index", new { status, searchTerm = term, customerId = cid, page }))
+</div>

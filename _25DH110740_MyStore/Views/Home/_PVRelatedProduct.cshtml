@@ -1,0 +1,11 @@
+﻿@model _25DH110740_MyStore.Models.ViewModel.ProductDetailVM
+<section class="section">
+    <h2 class="section-title">Sản phẩm tương tự</h2>
+    @if (!Model.RelatedProducts.Any()) { <p class="text-center text-muted">Chưa có sản phẩm tương tự.</p> }
+    else
+    {
+        <div class="slider"><div class="slider-track">
+            @foreach (var p in Model.RelatedProducts) { <div class="slide">@Html.Partial("_ProductCard", p)</div> }
+        </div></div>
+    }
+</section>

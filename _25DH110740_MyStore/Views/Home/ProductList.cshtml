@@ -1,0 +1,39 @@
+﻿@model _25DH110740_MyStore.Models.ViewModel.ProductListVM
+@{
+    ViewBag.Title = Model.Category != null ? Model.Category.CategoryName : "Tất cả sản phẩm";
+    int? catId = Model.Category != null ? (int?)Model.Category.CategoryId : null;
+    string term = ViewBag.SearchTerm as string;
+}
+<h2 class="section-title">@ViewBag.Title</h2>
+
+<div class="toolbar">
+    @using (Html.BeginForm("ProductList", "Home", FormMethod.Get, new { @class = "form-inline" }))
+    {
+        <input type="hidden" name="id" value="@catId" />
+        <input type="text" name="searchTerm" value="@term" class="form-control" placeholder="Tìm trong danh mục..." />
+        <select name="sortOrder" class="form-control" onchange="this.form.submit()">
+            <option value="" @(string.IsNullOrEmpty(Model.SortOrder) ? "selected" : "")>Mới nhất</option>
+            <option value="bestseller" @(Model.SortOrder == "bestseller" ? "selected" : "")>Bán chạy</option>
+            <option value="price_asc" @(Model.SortOrder == "price_asc" ? "selected" : "")>Giá tăng dần</option>
+            <option value="price_desc" @(Model.SortOrder == "price_desc" ? "selected" : "")>Giá giảm dần</option>
+            <option value="name" @(Model.SortOrder == "name" ? "selected" : "")>Tên A-Z</option>
+        </select>
+        <button class="btn btn-danger" type="submit">Lọc</button>
+    }
+    <span class="text-muted">@Model.Products.TotalItemCount sản phẩm</span>
+</div>
+
+@if (!Model.Products.Any())
+{
+    <p class="text-center text-muted">Chưa có sản phẩm nào.</p>
+}
+else
+{
+    <div class="grid grid-4">
+        @foreach (var p in Model.Products)
+        {
+            <div class="grid-item">@Html.Partial("_ProductCard", p)</div>
+        }
+    </div>
+    @Html.Pager(Model.Products, page => Url.Action("ProductList", new { id = catId, sortOrder = Model.SortOrder, searchTerm = term, page }))
+}

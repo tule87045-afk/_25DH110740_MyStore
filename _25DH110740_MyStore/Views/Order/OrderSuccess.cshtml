@@ -1,0 +1,35 @@
+﻿@model _25DH110740_MyStore.Models.Order
+@{ ViewBag.Title = "Đặt hàng thành công"; }
+<div class="text-center success-head">
+    <i class="fa fa-check-circle fa-4x text-success"></i>
+    <h2>Cảm ơn bạn đã đặt hàng!</h2>
+    <p>Mã đơn hàng của bạn là <b>#@Model.OrderId</b></p>
+</div>
+<div class="row">
+    <div class="col-md-5">
+        <div class="panel panel-default"><div class="panel-heading"><b>Thông tin đơn hàng</b></div>
+        <table class="table">
+            <tr><th>Mã đơn hàng</th><td>#@Model.OrderId</td></tr>
+            <tr><th>Ngày đặt</th><td>@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</td></tr>
+            <tr><th>Tổng số tiền</th><td class="text-danger"><b>@Format.Money(Model.TotalAmount)</b></td></tr>
+            <tr><th>Trạng thái</th><td>@Model.PaymentStatus</td></tr>
+            <tr><th>Thanh toán</th><td>@Model.PaymentMethod</td></tr>
+            <tr><th>Giao hàng</th><td>@Model.DeliveryMethod</td></tr>
+            <tr><th>Địa chỉ giao</th><td>@Model.ShippingAddress</td></tr>
+        </table></div>
+    </div>
+    <div class="col-md-7">
+        <div class="panel panel-default"><div class="panel-heading"><b>Chi tiết đơn hàng</b></div>
+        <table class="table">
+            <thead><tr><th>Sản phẩm</th><th>SL</th><th>Đơn giá</th><th class="text-right">Thành tiền</th></tr></thead>
+            @foreach (var d in Model.OrderDetails)
+            {
+                <tr><td>@d.Product.ProductName</td><td>@d.Quantity</td><td>@Format.Money(d.UnitPrice)</td><td class="text-right">@Format.Money(d.TotalPrice)</td></tr>
+            }
+        </table></div>
+    </div>
+</div>
+<p class="text-center">
+    <a class="btn btn-warning btn-lg" href="@Url.Action("Index", "Home")">Tiếp tục mua sắm</a>
+    <a class="btn btn-default btn-lg" href="@Url.Action("MyOrder", "Order")">Xem đơn hàng của tôi</a>
+</p>

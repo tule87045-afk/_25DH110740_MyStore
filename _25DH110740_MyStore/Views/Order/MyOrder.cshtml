@@ -1,0 +1,70 @@
+﻿@model _25DH110740_MyStore.Models.ViewModel.MyOrderVM
+@{ ViewBag.Title = "Đơn hàng của tôi"; }
+<h2 class="section-title left">ĐƠN HÀNG CỦA TÔI</h2>
+
+<ul class="nav nav-tabs order-tabs">
+    <li class="@(string.IsNullOrEmpty(Model.Status) ? "active" : "")"><a href="@Url.Action("MyOrder", new { searchTerm = Model.SearchTerm })">Tất cả đơn</a></li>
+    @foreach (var s in OrderStatus.All)
+    {
+        <li class="@(Model.Status == s ? "active" : "")"><a href="@Url.Action("MyOrder", new { status = s, searchTerm = Model.SearchTerm })">@s</a></li>
+    }
+</ul>
+
+@using (Html.BeginForm("MyOrder", "Order", FormMethod.Get, new { @class = "order-search" }))
+{
+    <input type="hidden" name="status" value="@Model.Status" />
+    <div class="input-group">
+        <input type="text" name="searchTerm" class="form-control" value="@Model.SearchTerm" placeholder="Tìm theo mã đơn hàng hoặc tên sản phẩm" />
+        <span class="input-group-btn"><button class="btn btn-danger">Tìm đơn hàng</button></span>
+    </div>
+}
+
+@if (!Model.Orders.Any())
+{
+    <p class="text-center text-muted mt">Chưa có đơn hàng nào.</p>
+}
+else
+{
+  
+    foreach (var g in Model.Orders.GroupBy(o => o.PaymentStatus))
+    {
+        if (string.IsNullOrEmpty(Model.Status)) { <h4 class="status-group">@g.Key (@g.Count())</h4> }
+        foreach (var o in g)
+        {
+            <div class="order-card">
+                <div class="order-head">
+                    <span>Đơn <b>#@o.OrderId</b> &middot; @o.OrderDate.ToString("dd/MM/yyyy HH:mm")</span>
+                    <span class="label label-@(o.PaymentStatus == OrderStatus.Delivered ? "success" : o.PaymentStatus == OrderStatus.Cancelled ? "default" : "warning")">@o.PaymentStatus</span>
+                </div>
+                @foreach (var d in o.OrderDetails)
+                {
+                    <div class="order-line">
+                        <img src="@Url.Img(d.Product.ImageUrl)" class="cart-thumb" />
+                        <span class="ol-name">@d.Product.ProductName</span>
+                        <span>x @d.Quantity</span>
+                        <span class="ol-price">@Format.Money(d.TotalPrice)</span>
+                    </div>
+                }
+                <div class="order-foot">
+                    <span>Tổng: <b class="text-danger">@Format.Money(o.TotalAmount)</b></span>
+                    <span>
+                        <a class="btn btn-default btn-sm" href="@Url.Action("OrderSuccess", new { id = o.OrderId })">Xem chi tiết</a>
+                        @using (Html.BeginForm("Reorder", "Order", new { id = o.OrderId }, FormMethod.Post, new { style = "display:inline" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button class="btn btn-warning btn-sm">Mua lại</button>
+                        }
+                        @if (o.PaymentStatus == OrderStatus.Pending || o.PaymentStatus == OrderStatus.Processing)
+                        {
+                            using (Html.BeginForm("CancelOrder", "Order", new { id = o.OrderId }, FormMethod.Post, new { style = "display:inline", onsubmit = "return confirm('Hủy đơn hàng này?')" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button class="btn btn-danger btn-sm">Hủy đơn</button>
+                            }
+                        }
+                    </span>
+                </div>
+            </div>
+        }
+    }
+}

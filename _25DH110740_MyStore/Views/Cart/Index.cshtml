@@ -1,0 +1,77 @@
+﻿@model _25DH110740_MyStore.Models.ViewModel.Cart
+@{ ViewBag.Title = "Giỏ hàng"; }
+<h2 class="section-title left">GIỎ HÀNG</h2>
+
+@if (!Model.Items.Any())
+{
+    <div class="empty-cart text-center">
+        <i class="fa fa-shopping-cart fa-4x text-muted"></i>
+        <p>Giỏ hàng của bạn đang trống.</p>
+        <a href="@Url.Action("ProductList", "Home")" class="btn btn-warning btn-lg">Tiếp tục mua hàng</a>
+    </div>
+}
+else
+{
+    using (Html.BeginForm("StartCheckout", "Order", FormMethod.Post, new { id = "cartForm" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-md-9">
+                <div class="cart-box">
+                    @foreach (var group in Model.GroupedItems)
+                    {
+                        <div class="cart-group-title"><i class="fa fa-tag"></i> @group.Key</div>
+                        <table class="table cart-table">
+                            <thead><tr><th style="width:40px"></th><th>Sản phẩm</th><th>Số lượng</th><th>Đơn giá</th><th>Thành tiền</th><th></th></tr></thead>
+                            <tbody>
+                            @foreach (var it in group)
+                            {
+                                <tr>
+                                    <td><input type="checkbox" name="selectedIds" value="@it.ProductId" class="chk" data-total="@((long)it.TotalPrice)" checked /></td>
+                                    <td>
+                                        <img src="@Url.Img(it.ImageUrl)" class="cart-thumb" />
+                                        <a href="@Url.Action("ProductDetail", "Home", new { id = it.ProductId })">@it.ProductName</a>
+                                    </td>
+                                    <td>
+                                        <div class="qty">
+                                            <button type="submit" class="btn btn-default btn-sm" formaction="@Url.Action("UpdateQuantity", "Cart", new { id = it.ProductId, quantity = it.Quantity - 1 })" formnovalidate>-</button>
+                                            <input type="text" value="@it.Quantity" readonly />
+                                            <button type="submit" class="btn btn-default btn-sm" formaction="@Url.Action("UpdateQuantity", "Cart", new { id = it.ProductId, quantity = it.Quantity + 1 })" formnovalidate>+</button>
+                                        </div>
+                                    </td>
+                                    <td>@Format.Money(it.UnitPrice)</td>
+                                    <td>@Format.Money(it.TotalPrice)</td>
+                                    <td>
+                                        <button type="submit" class="btn btn-link text-danger" title="Xóa" formaction="@Url.Action("RemoveItem", "Cart", new { id = it.ProductId })" formnovalidate><i class="fa fa-trash fa-lg"></i></button>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+                <a href="@Url.Action("Index", "Home")" class="btn btn-warning btn-lg">Tiếp tục mua hàng</a>
+                <a href="@Url.Action("ClearCart", "Cart")" class="btn btn-default btn-lg" onclick="return confirm('Xóa toàn bộ giỏ hàng?')">Xóa giỏ hàng</a>
+            </div>
+            <div class="col-md-3">
+                <div class="cart-box summary">
+                    <div>Tổng giá trị: <b class="text-danger" id="selTotal">@Format.Money(Model.Total)</b></div>
+                    <button type="submit" class="btn btn-danger btn-block btn-lg" id="buyBtn">Mua hàng</button>
+                </div>
+            </div>
+        </div>
+    }
+    @Html.Partial("_PVSimilarProduct", Model)
+}
+
+@section scripts {
+    <script>
+        function recalc() {
+            var t = 0;
+            $('.chk:checked').each(function () { t += parseInt($(this).data('total')); });
+            $('#selTotal').text(t.toLocaleString('vi-VN') + '₫');
+        }
+        $('.chk').on('change', recalc);
+        recalc();
+    </script>
+}

@@ -1,0 +1,25 @@
+﻿@model PagedList.IPagedList<_25DH110740_MyStore.Models.Customer>
+@{ ViewBag.Title = "Khách hàng"; string term = ViewBag.SearchTerm as string, sort = ViewBag.SortOrder as string; }
+<h2>Quản lý khách hàng</h2>
+<div class="card">
+@using (Html.BeginForm("Index", "Customer", FormMethod.Get, new { @class = "form-inline", style = "margin-bottom:12px" }))
+{
+    <input class="form-control" name="searchTerm" value="@term" placeholder="Tên, tài khoản, email, SĐT" />
+    <select class="form-control" name="sortOrder">
+        <option value="">Tên A-Z</option>
+        <option value="name_desc" @(sort == "name_desc" ? "selected" : "")>Tên Z-A</option>
+        <option value="username" @(sort == "username" ? "selected" : "")>Tài khoản</option>
+        <option value="orders_desc" @(sort == "orders_desc" ? "selected" : "")>Nhiều đơn nhất</option>
+    </select>
+    <button class="btn btn-primary">Tìm / Sắp xếp</button>
+}
+<table class="table table-hover">
+    <thead><tr><th>Tài khoản</th><th>Họ tên</th><th>Email</th><th>SĐT</th><th>Địa chỉ</th><th></th></tr></thead>
+    @foreach (var c in Model)
+    {
+        <tr><td>@c.Username</td><td>@c.CustomerName</td><td>@c.CustomerEmail</td><td>@c.CustomerPhone</td><td>@c.CustomerAddress</td>
+        <td><a class="btn btn-default btn-sm" href="@Url.Action("Index", "Order", new { customerId = c.CustomerId })">Xem đơn hàng</a></td></tr>
+    }
+</table>
+@Html.Pager(Model, page => Url.Action("Index", new { searchTerm = term, sortOrder = sort, page }))
+</div>

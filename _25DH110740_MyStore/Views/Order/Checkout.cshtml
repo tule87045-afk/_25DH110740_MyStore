@@ -1,0 +1,76 @@
+﻿@model _25DH110740_MyStore.Models.ViewModel.CheckoutVM
+@{ ViewBag.Title = "Thanh toán"; }
+<h2 class="section-title left">THANH TOÁN</h2>
+@using (Html.BeginForm("Checkout", "Order", FormMethod.Post, new { id = "checkoutForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.SelectedIds)
+    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+    <div class="row">
+        <div class="col-md-8">
+            <div class="panel panel-default"><div class="panel-heading"><b>1. Hình thức giao hàng</b></div><div class="panel-body">
+                <label class="radio-opt"><input type="radio" name="DeliveryMethod" value="Standard" @(Model.DeliveryMethod != "Express" ? "checked" : "") /> Giao hàng tiêu chuẩn (2-4 ngày) - miễn phí từ 500.000₫</label>
+                <label class="radio-opt"><input type="radio" name="DeliveryMethod" value="Express" @(Model.DeliveryMethod == "Express" ? "checked" : "") /> Giao hàng nhanh (trong ngày/1-2 ngày)</label>
+            </div></div>
+
+            <div class="panel panel-default"><div class="panel-heading"><b>2. Hình thức thanh toán</b></div><div class="panel-body">
+                <label class="radio-opt"><input type="radio" name="PaymentMethod" value="COD" @(Model.PaymentMethod == "COD" ? "checked" : "") /> Thanh toán khi nhận hàng (COD)</label>
+                <label class="radio-opt"><input type="radio" name="PaymentMethod" value="Bank" @(Model.PaymentMethod == "Bank" ? "checked" : "") /> Chuyển khoản ngân hàng</label>
+                <label class="radio-opt"><input type="radio" name="PaymentMethod" value="PayPal" @(Model.PaymentMethod == "PayPal" ? "checked" : "") /> PayPal (tùy chọn, xem README)</label>
+                @Html.ValidationMessageFor(m => m.PaymentMethod, "", new { @class = "text-danger" })
+            </div></div>
+
+            <div class="panel panel-default"><div class="panel-heading"><b>3. Giao tới</b></div><div class="panel-body">
+                <div class="form-group">@Html.LabelFor(m => m.CustomerName)@Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control", @readonly = "readonly" })</div>
+                <div class="form-group">@Html.LabelFor(m => m.CustomerPhone)@Html.TextBoxFor(m => m.CustomerPhone, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.CustomerPhone, "", new { @class = "text-danger" })</div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ShippingAddress)
+                    <div class="input-group">
+                        @Html.TextBoxFor(m => m.ShippingAddress, new { @class = "form-control", @readonly = "readonly" })
+                        <span class="input-group-btn"><button type="button" class="btn btn-default" onclick="enableAddressEdit()">Chỉnh sửa</button></span>
+                    </div>
+                    <input type="text" id="NewShippingAddress" name="NewShippingAddress" class="form-control mt" style="display:none" placeholder="Nhập địa chỉ giao hàng mới" />
+                    @Html.ValidationMessageFor(m => m.ShippingAddress, "", new { @class = "text-danger" })
+                </div>
+            </div></div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="cart-box summary">
+                <h4>Đơn hàng</h4>
+                <table class="table table-condensed">
+                    @foreach (var it in Model.Items)
+                    {
+                        <tr><td>@it.ProductName <span class="text-muted">x @it.Quantity</span></td><td class="text-right">@Format.Money(it.TotalPrice)</td></tr>
+                    }
+                    <tr><td>Tạm tính</td><td class="text-right">@Format.Money(Model.Subtotal)</td></tr>
+                    <tr><td>Phí vận chuyển</td><td class="text-right" id="shipFee">@Format.Money(Model.ShippingFee)</td></tr>
+                    <tr><th>Tổng cộng</th><th class="text-right text-danger" id="grand">@Format.Money(Model.Total)</th></tr>
+                </table>
+                <button type="submit" class="btn btn-danger btn-block btn-lg" onclick="updateShippingAddress()">Đặt hàng</button>
+                <a href="@Url.Action("Index", "Cart")" class="btn btn-link btn-block">Quay lại giỏ hàng</a>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+        var subtotal = @((long)Model.Subtotal), free = 500000, stdFee = 30000, expFee = 60000;
+        function enableAddressEdit() {
+            $('#NewShippingAddress').show().focus();
+        }
+        function updateShippingAddress() {
+            var v = $.trim($('#NewShippingAddress').val());
+            if (v) $('#ShippingAddress').val(v);
+        }
+        function refreshFee() {
+            var m = $('input[name=DeliveryMethod]:checked').val();
+            var fee = m === 'Express' ? expFee : (subtotal >= free ? 0 : stdFee);
+            $('#shipFee').text(fee.toLocaleString('vi-VN') + '₫');
+            $('#grand').text((subtotal + fee).toLocaleString('vi-VN') + '₫');
+        }
+        $('input[name=DeliveryMethod]').on('change', refreshFee);
+        refreshFee();
+    </script>
+}

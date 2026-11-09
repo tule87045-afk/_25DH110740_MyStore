@@ -1,0 +1,43 @@
+﻿@model PagedList.IPagedList<_25DH110740_MyStore.Models.Product>
+@{
+    ViewBag.Title = "Sản phẩm";
+    string term = ViewBag.SearchTerm as string, sort = ViewBag.SortOrder as string; int? cat = ViewBag.CategoryId as int?;
+    var cats = (List<_25DH110740_MyStore.Models.Category>)ViewBag.Categories;
+}
+<h2>Quản lý sản phẩm <a class="btn btn-success pull-right" href="@Url.Action("Create")"><i class="fa fa-plus"></i> Thêm mới</a></h2>
+<div class="card">
+@using (Html.BeginForm("Index", "Product", FormMethod.Get, new { @class = "form-inline", style = "margin-bottom:12px" }))
+{
+    <input class="form-control" name="searchTerm" value="@term" placeholder="Tên hoặc thương hiệu" />
+    <select class="form-control" name="categoryId"><option value="">-- Tất cả danh mục --</option>
+        @foreach (var c in cats) { <option value="@c.CategoryId" @(cat == c.CategoryId ? "selected" : "")>@c.CategoryName</option> }
+    </select>
+    <select class="form-control" name="sortOrder">
+        <option value="">Mới nhất</option>
+        <option value="name" @(sort == "name" ? "selected" : "")>Tên A-Z</option>
+        <option value="name_desc" @(sort == "name_desc" ? "selected" : "")>Tên Z-A</option>
+        <option value="price" @(sort == "price" ? "selected" : "")>Giá tăng</option>
+        <option value="price_desc" @(sort == "price_desc" ? "selected" : "")>Giá giảm</option>
+        <option value="sold_desc" @(sort == "sold_desc" ? "selected" : "")>Bán chạy</option>
+        <option value="stock" @(sort == "stock" ? "selected" : "")>Tồn kho thấp</option>
+    </select>
+    <button class="btn btn-primary">Tìm / Sắp xếp</button>
+}
+<table class="table table-hover">
+    <thead><tr><th></th><th>Tên</th><th>Danh mục</th><th>Giá</th><th>Tồn</th><th>Đã bán</th><th></th></tr></thead>
+    @foreach (var p in Model)
+    {
+        <tr>
+            <td><img class="thumb" src="@Url.Img(p.ImageUrl)" /></td>
+            <td>@p.ProductName<br /><small class="text-muted">@p.Brand</small></td>
+            <td>@p.Category.CategoryName</td><td>@Format.Money(p.Price)</td><td>@p.Stock</td><td>@p.Sold</td>
+            <td class="text-right">
+                <a class="btn btn-default btn-sm" href="@Url.Action("Edit", new { id = p.ProductId })">Sửa</a>
+                @using (Html.BeginForm("Delete", "Product", new { id = p.ProductId }, FormMethod.Post, new { style = "display:inline", onsubmit = "return confirm('Xóa sản phẩm này?')" }))
+                { @Html.AntiForgeryToken() <button class="btn btn-danger btn-sm">Xóa</button> }
+            </td>
+        </tr>
+    }
+</table>
+@Html.Pager(Model, page => Url.Action("Index", new { searchTerm = term, sortOrder = sort, categoryId = cat, page }))
+</div>

@@ -1,0 +1,8 @@
+﻿@model _25DH110740_MyStore.Models.ViewModel.ProductDetailVM
+<section class="section">
+    <h2 class="section-title">Top Deals</h2>
+    <div class="grid grid-3">
+        @foreach (var p in Model.TopProducts) { <div class="grid-item">@Html.Partial("_ProductCard", p)</div> }
+    </div>
+    @Html.Pager(Model.TopProducts, page => Url.Action("ProductDetail", new { id = Model.Product.ProductId, quantity = Model.Quantity, page }))
+</section>

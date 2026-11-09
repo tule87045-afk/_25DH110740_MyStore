@@ -1,0 +1,39 @@
+﻿@model _25DH110740_MyStore.Models.ViewModel.ProfileInfoVM
+@{ ViewBag.Title = "Thông tin tài khoản"; }
+<h2 class="section-title">Tài khoản của tôi</h2>
+<div class="row">
+    <div class="col-md-5">
+        <div class="panel panel-default"><div class="panel-heading"><b>Thông tin cá nhân</b></div>
+        <table class="table">
+            <tr><th>Tên đăng nhập</th><td>@Model.Profile.Username</td></tr>
+            <tr><th>Họ tên</th><td>@Model.Profile.CustomerName</td></tr>
+            <tr><th>Email</th><td>@Model.Profile.CustomerEmail</td></tr>
+            <tr><th>Số điện thoại</th><td>@Model.Profile.CustomerPhone</td></tr>
+            <tr><th>Địa chỉ</th><td>@Model.Profile.CustomerAddress</td></tr>
+        </table></div>
+    </div>
+    <div class="col-md-7">
+        <div class="panel panel-default"><div class="panel-heading"><b>Thay đổi thông tin</b></div><div class="panel-body">
+        @using (Html.BeginForm("UpdateProfile", "Account", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-group">@Html.LabelFor(m => m.Profile.CustomerName)@Html.TextBoxFor(m => m.Profile.CustomerName, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Profile.CustomerName, "", new { @class = "text-danger" })</div>
+            <div class="form-group">@Html.LabelFor(m => m.Profile.CustomerEmail)@Html.TextBoxFor(m => m.Profile.CustomerEmail, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Profile.CustomerEmail, "", new { @class = "text-danger" })</div>
+            <div class="form-group">@Html.LabelFor(m => m.Profile.CustomerPhone)@Html.TextBoxFor(m => m.Profile.CustomerPhone, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Profile.CustomerPhone, "", new { @class = "text-danger" })</div>
+            <div class="form-group">@Html.LabelFor(m => m.Profile.CustomerAddress)@Html.TextBoxFor(m => m.Profile.CustomerAddress, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Profile.CustomerAddress, "", new { @class = "text-danger" })</div>
+            <button class="btn btn-danger">Cập nhật</button>
+        }
+        </div></div>
+
+        <div class="panel panel-default"><div class="panel-heading"><b>Đổi mật khẩu</b></div><div class="panel-body">
+        @using (Html.BeginForm("ChangePassword", "Account", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-group">@Html.LabelFor(m => m.Password.OldPassword)@Html.PasswordFor(m => m.Password.OldPassword, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Password.OldPassword, "", new { @class = "text-danger" })</div>
+            <div class="form-group">@Html.LabelFor(m => m.Password.NewPassword)@Html.PasswordFor(m => m.Password.NewPassword, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Password.NewPassword, "", new { @class = "text-danger" })</div>
+            <div class="form-group">@Html.LabelFor(m => m.Password.ConfirmPassword)@Html.PasswordFor(m => m.Password.ConfirmPassword, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Password.ConfirmPassword, "", new { @class = "text-danger" })</div>
+            <button class="btn btn-default">Đổi mật khẩu</button>
+        }
+        </div></div>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+﻿@model PagedList.IPagedList<_25DH110740_MyStore.Models.User>
+@{ ViewBag.Title = "Tài khoản Admin"; string term = ViewBag.SearchTerm as string; }
+<h2>Tài khoản Admin <a class="btn btn-success pull-right" href="@Url.Action("Create")"><i class="fa fa-plus"></i> Thêm mới</a></h2>
+<div class="card">
+@using (Html.BeginForm("Index", "AdminUser", FormMethod.Get, new { @class = "form-inline", style = "margin-bottom:12px" }))
+{ <input class="form-control" name="searchTerm" value="@term" placeholder="Tên đăng nhập" /> <button class="btn btn-primary">Tìm</button> }
+<table class="table table-hover">
+    <thead><tr><th>Tên đăng nhập</th><th></th></tr></thead>
+    @foreach (var u in Model)
+    {
+        <tr><td>@u.Username</td><td class="text-right">
+            <a class="btn btn-default btn-sm" href="@Url.Action("Edit", new { id = u.Username })">Đổi mật khẩu</a>
+            @using (Html.BeginForm("Delete", "AdminUser", new { id = u.Username }, FormMethod.Post, new { style = "display:inline", onsubmit = "return confirm('Xóa tài khoản này?')" }))
+            { @Html.AntiForgeryToken() <button class="btn btn-danger btn-sm">Xóa</button> }
+        </td></tr>
+    }
+</table>
+@Html.Pager(Model, page => Url.Action("Index", new { searchTerm = term, page }))
+</div>

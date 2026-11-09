@@ -1,0 +1,15 @@
+﻿@model List<_25DH110740_MyStore.Models.Category>
+@{ ViewBag.Title = "Danh mục"; }
+<h2>Quản lý danh mục <a class="btn btn-success pull-right" href="@Url.Action("Create")"><i class="fa fa-plus"></i> Thêm mới</a></h2>
+<div class="card"><table class="table table-hover">
+    <thead><tr><th>#</th><th>Tên danh mục</th><th>Số sản phẩm</th><th></th></tr></thead>
+    @foreach (var c in Model)
+    {
+        <tr><td>@c.CategoryId</td><td>@c.CategoryName</td><td>@c.Products.Count</td>
+        <td class="text-right">
+            <a class="btn btn-default btn-sm" href="@Url.Action("Edit", new { id = c.CategoryId })">Sửa</a>
+            @using (Html.BeginForm("Delete", "Category", new { id = c.CategoryId }, FormMethod.Post, new { style = "display:inline", onsubmit = "return confirm('Xóa danh mục này?')" }))
+            { @Html.AntiForgeryToken() <button class="btn btn-danger btn-sm">Xóa</button> }
+        </td></tr>
+    }
+</table></div>

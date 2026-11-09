@@ -1,0 +1,14 @@
+﻿@model _25DH110740_MyStore.Models.ViewModel.Cart
+@if (Model.SimilarProducts != null && Model.SimilarProducts.Any())
+{
+    <section class="section">
+        <h2 class="section-title">Sản phẩm tương tự</h2>
+        <div class="grid grid-4">
+            @foreach (var p in Model.SimilarProducts)
+            {
+                <div class="grid-item">@Html.Partial("_ProductCard", p)</div>
+            }
+        </div>
+        @Html.Pager(Model.SimilarProducts, page => Url.Action("Index", "Cart", new { page }))
+    </section>
+}

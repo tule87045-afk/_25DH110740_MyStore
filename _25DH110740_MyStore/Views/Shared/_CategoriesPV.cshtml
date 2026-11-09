@@ -1,0 +1,10 @@
+﻿@model List<_25DH110740_MyStore.Models.Category>
+<nav class="cat-menu">
+    <div class="container">
+        <a href="@Url.Action("ProductList", "Home")">Tất cả sản phẩm</a>
+        @foreach (var c in Model)
+        {
+            <a href="@Url.Action("ProductList", "Home", new { id = c.CategoryId })">@c.CategoryName</a>
+        }
+    </div>
+</nav>

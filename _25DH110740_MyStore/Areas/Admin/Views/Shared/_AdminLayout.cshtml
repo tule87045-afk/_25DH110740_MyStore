@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - Quản trị Shuttle Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/myStyle/Admin.css" rel="stylesheet" />
+</head>
+<body>
+@if (Session["AdminUser"] != null)
+{
+    <div class="admin-wrap">
+        <aside class="admin-side">
+            <div class="admin-brand">SHUTTLE<span>PRO</span> <small>Admin</small></div>
+            <a href="@Url.Action("Index", "Dashboard", new { area = "Admin" })"><i class="fa fa-tachometer"></i> Thống kê</a>
+            <a href="@Url.Action("Index", "Category", new { area = "Admin" })"><i class="fa fa-th-list"></i> Danh mục</a>
+            <a href="@Url.Action("Index", "Product", new { area = "Admin" })"><i class="fa fa-cube"></i> Sản phẩm</a>
+            <a href="@Url.Action("Index", "Order", new { area = "Admin" })"><i class="fa fa-file-text-o"></i> Đơn hàng</a>
+            <a href="@Url.Action("Index", "Customer", new { area = "Admin" })"><i class="fa fa-users"></i> Khách hàng</a>
+            <a href="@Url.Action("Index", "AdminUser", new { area = "Admin" })"><i class="fa fa-user-secret"></i> Tài khoản Admin</a>
+            <hr />
+            <a href="@Url.Content("~/")" target="_blank"><i class="fa fa-external-link"></i> Xem website</a>
+            <a href="@Url.Action("Logout", "Account", new { area = "Admin" })"><i class="fa fa-sign-out"></i> Đăng xuất (@Session["AdminUser"])</a>
+        </aside>
+        <section class="admin-main">
+            @if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+            @if (TempData["Message"] != null) { <div class="alert alert-success">@TempData["Message"]</div> }
+            @RenderBody()
+        </section>
+    </div>
+}
+else
+{
+    <div class="container">@RenderBody()</div>
+}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

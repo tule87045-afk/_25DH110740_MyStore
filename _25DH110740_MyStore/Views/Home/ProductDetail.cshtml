@@ -1,0 +1,63 @@
+﻿@model _25DH110740_MyStore.Models.ViewModel.ProductDetailVM
+@{ ViewBag.Title = Model.Product.ProductName; var p = Model.Product; }
+
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+    <li><a href="@Url.Action("ProductList", "Home", new { id = p.CategoryId })">@p.Category.CategoryName</a></li>
+    <li class="active">@p.ProductName</li>
+</ol>
+
+<div class="detail">
+    <div class="detail-img"><img src="@Url.Img(p.ImageUrl)" alt="@p.ProductName" /></div>
+    <div class="detail-info">
+        <h1>@p.ProductName</h1>
+        <div class="text-muted">Thương hiệu: <b>@p.Brand</b> &middot; Danh mục: @p.Category.CategoryName &middot; Đã bán: @p.Sold</div>
+        <div class="detail-price">@Format.Money(p.Price)</div>
+        <p>@p.ProductDescription</p>
+        <p>
+            @if (p.Stock > 0) { <span class="label label-success">Còn hàng (@p.Stock)</span> }
+            else { <span class="label label-danger">Hết hàng</span> }
+        </p>
+
+        @if (p.Stock > 0)
+        {
+            using (Html.BeginForm("AddItem", "Cart", FormMethod.Post, new { id = "buyForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@p.ProductId" />
+                <input type="hidden" name="returnUrl" value="@Request.RawUrl" />
+                <div class="qty-row">
+                    <label>Số lượng</label>
+                    <div class="qty">
+                        <button type="button" class="btn btn-default" id="minus">-</button>
+                        <input type="number" id="quantity" name="quantity" value="@Model.Quantity" min="1" max="@p.Stock" />
+                        <button type="button" class="btn btn-default" id="plus">+</button>
+                    </div>
+                </div>
+                <div class="subtotal">Tạm tính: <b id="subtotal">@Format.Money(p.Price * Model.Quantity)</b></div>
+                <button type="submit" class="btn btn-danger btn-lg"><i class="fa fa-cart-plus"></i> Thêm vào giỏ</button>
+                <a href="@Url.Action("Index", "Cart")" class="btn btn-default btn-lg">Xem giỏ hàng</a>
+            }
+        }
+    </div>
+</div>
+
+@Html.Partial("_PVRelatedProduct", Model)
+@Html.Partial("_PVTopProduct", Model)
+
+@section scripts {
+    <script>
+        (function () {
+            var price = @((long)p.Price), max = @p.Stock;
+            var $q = $('#quantity');
+            function fmt(n) { return n.toLocaleString('vi-VN') + '₫'; }
+            function upd() {
+                var v = parseInt($q.val()) || 1; v = Math.max(1, Math.min(max, v)); $q.val(v);
+                $('#subtotal').text(fmt(price * v));
+            }
+            $('#minus').click(function () { $q.val((parseInt($q.val()) || 1) - 1); upd(); });
+            $('#plus').click(function () { $q.val((parseInt($q.val()) || 1) + 1); upd(); });
+            $q.on('input change', upd);
+        })();
+    </script>
+}

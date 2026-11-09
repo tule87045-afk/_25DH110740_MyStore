@@ -1,0 +1,25 @@
+﻿@model _25DH110740_MyStore.Models.ViewModel.HomeProductVM
+@{ ViewBag.Title = "Trang chủ"; }
+
+<section class="hero">
+    <img src="~/Content/images/banner.svg" alt="Banner cầu lông" />
+    <div class="hero-text">
+        <h1>Nâng Cấp Từng Gía Trị Bản Thân</h1>
+        <p>Vợt, cầu, giày và phụ kiện cầu lông chính hãng - giá tốt mỗi ngày</p>
+        <a class="btn btn-warning btn-lg" href="@Url.Action("ProductList", "Home")">Bắt đầu mua sắm</a>
+    </div>
+</section>
+
+<section class="search-box">
+    <h2>Tìm kiếm sản phẩm</h2>
+    @using (Html.BeginForm("Index", "Home", FormMethod.Get, new { @class = "form-inline" }))
+    {
+        <div class="input-group">
+            <input type="text" name="searchTerm" class="form-control" value="@Model.SearchTerm" placeholder="Nhập tên, mô tả, thương hiệu hoặc danh mục..." />
+            <span class="input-group-btn"><button class="btn btn-danger" type="submit">Tìm kiếm</button></span>
+        </div>
+    }
+</section>
+
+@Html.Partial("_PVFeatureProduct", Model)
+@Html.Partial("_PVNewProduct", Model)

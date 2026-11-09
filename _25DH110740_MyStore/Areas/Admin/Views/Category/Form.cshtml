@@ -1,0 +1,12 @@
+﻿@model _25DH110740_MyStore.Models.Category
+@{ ViewBag.Title = Model.CategoryId == 0 ? "Thêm danh mục" : "Sửa danh mục"; }
+<h2>@ViewBag.Title</h2>
+<div class="card" style="max-width:560px">
+@using (Html.BeginForm(Model.CategoryId == 0 ? "Create" : "Edit", "Category", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.CategoryId)
+    <div class="form-group">@Html.LabelFor(m => m.CategoryName)@Html.TextBoxFor(m => m.CategoryName, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.CategoryName, "", new { @class = "text-danger" })</div>
+    <button class="btn btn-success">Lưu</button> <a class="btn btn-default" href="@Url.Action("Index")">Hủy</a>
+}
+</div>

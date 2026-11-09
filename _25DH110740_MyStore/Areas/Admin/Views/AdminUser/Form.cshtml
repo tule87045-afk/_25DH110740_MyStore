@@ -1,0 +1,15 @@
+﻿@model _25DH110740_MyStore.Areas.Admin.Controllers.AdminUserVM
+@{ ViewBag.Title = Model.IsEdit ? "Đổi mật khẩu Admin" : "Thêm tài khoản Admin"; }
+<h2>@ViewBag.Title</h2>
+<div class="card" style="max-width:480px">
+@using (Html.BeginForm(Model.IsEdit ? "Edit" : "Create", "AdminUser", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group">@Html.LabelFor(m => m.Username)
+        @if (Model.IsEdit) { @Html.HiddenFor(m => m.Username) <p class="form-control-static">@Model.Username</p> }
+        else { @Html.TextBoxFor(m => m.Username, new { @class = "form-control" }) @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" }) }
+    </div>
+    <div class="form-group">@Html.LabelFor(m => m.Password)@Html.PasswordFor(m => m.Password, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })</div>
+    <button class="btn btn-success">Lưu</button> <a class="btn btn-default" href="@Url.Action("Index")">Hủy</a>
+}
+</div>

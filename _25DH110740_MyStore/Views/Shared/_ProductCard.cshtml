@@ -1,0 +1,10 @@
+﻿@model _25DH110740_MyStore.Models.Product
+<div class="product-card">
+    <a href="@Url.Action("ProductDetail", "Home", new { id = Model.ProductId })" class="pc-img"><img src="@Url.Img(Model.ImageUrl)" alt="@Model.ProductName" /></a>
+    <div class="pc-body">
+        <div class="pc-price">@Format.Money(Model.Price)</div>
+        <a class="pc-name" href="@Url.Action("ProductDetail", "Home", new { id = Model.ProductId })">@Model.ProductName</a>
+        <div class="pc-meta">@(Model.Category != null ? Model.Category.CategoryName : "") @if (!string.IsNullOrEmpty(Model.Brand)) { <text>&middot; @Model.Brand</text> }</div>
+        <div class="pc-sold">Đã bán: @Model.Sold</div>
+    </div>
+</div>
