@@ -11,6 +11,9 @@
             @if (Model.IsLoggedIn)
             {
                 <li><a href="@Url.Action("ProfileInfo", "Account")">Thông tin tài khoản</a></li>
+                
+                
+                
                 <li><a href="@Url.Action("MyOrder", "Order")">Lịch sử mua hàng</a></li>
                 <li role="separator" class="divider"></li>
                 <li><a href="@Url.Action("Logout", "Account")">Đăng xuất</a></li>
